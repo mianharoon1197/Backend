@@ -17,6 +17,12 @@ function ageCheck(req, resp, next) {
     next();
   }
 }
+
+//route middleware applied on selected routes not all
+function urlCheck(req, resp, next) {
+  console.log("Requested Url: ", req.url);
+  next()
+}
 app.use(ageCheck);
 
 app.get("/", (req, resp) => {
@@ -29,7 +35,8 @@ app.get("/about", (req, resp) => {
   resp.send(about());
 });
 
-app.get("/contact", (req, resp) => {
+//here route middle ware applied
+app.get("/contact",urlCheck, (req, resp) => {
   //resp.write('<h1>Contact me at abc@gmail.com</h1>')
   resp.send(contact());
 });
