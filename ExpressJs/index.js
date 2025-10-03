@@ -23,4 +23,6 @@ app.get("/contact",(req,resp)=>{
      resp.send(contact())
 })
 
-app.listen(1100)
+app.listen(1100,()=>{
+    console.log("Server started at port 1100")
+})
