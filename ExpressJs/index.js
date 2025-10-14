@@ -6,13 +6,15 @@ import express from "express";
 import home from "./pages/home.js";
 import about from "./pages/about.js";
 import contact from "./pages/contact.js";
+
+import usersData from './usersData.json' with {type:'json'}
 const app = express();
 
 //global or application midleware
 //applied to all pages/routes
 function ageCheck(req, resp, next) {
   if (!req.query.age || req.query.age < 18) {
-    resp.send("<h1>You Cannot acces this page</h1>");
+    resp.send("<h1>You Cannot acces this page bcz you are under age</h1>");
   } else {
     next();
   }
@@ -23,23 +25,51 @@ function urlCheck(req, resp, next) {
   console.log("Requested Url: ", req.url);
   next()
 }
-app.use(ageCheck);
+//applies this on all pages
+//app.use(ageCheck);
 
-app.get("/", (req, resp) => {
-  //resp.write('<h1>Hello from Express Harry</h1>')
-  resp.send(home());
-});
+//THESE ARE ALL STATCI ROUTES
+// app.get("/", (req, resp) => {
+//   //resp.write('<h1>Hello from Express Harry</h1>')
+//   resp.send(home());
+// });
 
-app.get("/about", (req, resp) => {
-  // resp.write('<h1>Tell me about Yourself</h1>')
-  resp.send(about());
-});
+// app.get("/about", (req, resp) => {
+//   // resp.write('<h1>Tell me about Yourself</h1>')
+//   resp.send(about());
+// });
 
 //here route middle ware applied
-app.get("/contact",urlCheck, (req, resp) => {
-  //resp.write('<h1>Contact me at abc@gmail.com</h1>')
-  resp.send(contact());
-});
+// app.get("/contact",ageCheck, (req, resp) => {
+//   //resp.write('<h1>Contact me at abc@gmail.com</h1>')
+//   resp.send(contact());
+// });
+
+
+
+//MAKING SIMPLE API USING DYNAMIC ROUTE
+
+app.get("/",(req,resp)=>{
+    resp.send(usersData)
+})
+
+//dynamic route using id
+app.get("/users/:id",(req,resp)=>{
+  const id = req.params.id;
+  let filterdData = usersData.filter((user)=>user.id==id)
+
+  resp.send(filterdData)
+})
+
+//using name
+
+app.get("/username/:name",(req,resp)=>{
+  const name = req.params.name;
+  let filterdData = usersData.filter((user)=>user.name.toLowerCase()==name.toLowerCase())
+
+  resp.send(filterdData)
+})
+
 
 app.listen(1100, () => {
   console.log("Server started at port 1100");
