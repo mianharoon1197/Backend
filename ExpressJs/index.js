@@ -61,7 +61,7 @@ app.get("/users/:id",(req,resp)=>{
   resp.send(filterdData)
 })
 
-//using name
+//using name dynamic route
 
 app.get("/username/:name",(req,resp)=>{
   const name = req.params.name;

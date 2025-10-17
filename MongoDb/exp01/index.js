@@ -22,16 +22,37 @@ const Client = new MongoClient(url);
 
 const app = express();
 
-app.set("view engine","ejs")
-//making api to get data 
-app.get("/", async (req, resp) => {
-  await Client.connect();
-  const db = Client.db(dbName);
-  const collection = db.collection(collectionName);
+//for ejs templates
+app.set("view engine", "ejs");
 
-  const result = await collection.find().toArray();
-  resp.render('students',{result})
-  console.log(result);
+// //making api to get data
+// app.get("/", async (req, resp) => {
+//   await Client.connect();
+//   const db = Client.db(dbName);
+//   const collection = db.collection(collectionName);
+
+//   const students = await collection.find().toArray();
+//   resp.render('students',{students})
+//   console.log(students);
+// });
+
+// ================ another way to make api========================
+//======  modern way
+Client.connect().then((connection) => {
+  const db = connection.db(dbName);
+
+  //it always need await as it is fetching data
+  app.get("/api", async (req, resp) => {
+    const collection = db.collection(collectionName);
+    const students = await collection.find().toArray();
+    resp.send(students);
+  });
+
+  app.get("/ui", async (req, resp) => {
+    const collection = db.collection(collectionName);
+    const students = await collection.find().toArray();
+    resp.render("students", { students });
+  });
 });
 
 app.listen(3200, () => {
