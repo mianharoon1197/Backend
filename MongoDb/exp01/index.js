@@ -21,7 +21,8 @@ const Client = new MongoClient(url);
 // dbConnection();
 
 const app = express();
-
+//middleware to get data here when we submit
+app.use(express.json())
 //for ejs templates
 app.set("view engine", "ejs");
 
@@ -53,6 +54,11 @@ Client.connect().then((connection) => {
     const students = await collection.find().toArray();
     resp.render("students", { students });
   });
+
+  app.post("/sendData",(req,resp)=>{
+    console.log(req.body)
+    resp.send({'message': req.body})
+  })
 });
 
 app.listen(3200, () => {
