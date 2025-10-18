@@ -6,59 +6,68 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useState } from 'react';
+import { sendData } from '../api/userapi';
 
 function SignUp() {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const [checked, setChecked] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [age, setAge] = useState('');
+
+  const handleSubmit = async () => {
+    if (!name.trim()) return Alert.alert('Validation', 'Name is required!');
+    await sendData({ name, email, age });
+    Alert.alert('Success', 'Data sent to backend!');
+    setName('');
+    setEmail('');
+    setAge('');
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
-      <Text style={styles.signupText}>Sign Up</Text>
+      <Text style={styles.signupText}>User Form</Text>
 
       <View style={styles.shadowWrapper}>
         <Ionicons name="person-circle-outline" size={30} color="#7F00FF" />
-        <TextInput style={styles.inputBox} placeholder="Name" />
+        <TextInput
+          style={styles.inputBox}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
       </View>
 
       <View style={styles.shadowWrapper}>
         <Ionicons name="mail-open" size={30} color="#7F00FF" />
-        <TextInput style={styles.inputBox} placeholder="E-mail" />
+        <TextInput
+          style={styles.inputBox}
+          placeholder="E-mail"
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
 
       <View style={styles.shadowWrapper}>
         <Ionicons name="lock-closed" size={30} color="#7F00FF" />
 
-        <View style={styles.eyeIcon}>
-          <TextInput style={styles.inputBox} placeholder="Password" />
-          <Ionicons name="eye-outline" size={25} color="#7F00FF" />
-        </View>
+        <TextInput
+          style={styles.inputBox}
+          placeholder="Age"
+          value={age}
+          onChangeText={setAge}
+        />
       </View>
 
-      <View style={styles.terms}>
-      
-        <Text style={styles.smallText}>
-          I read and agree to{' '}
-          <Text style={styles.link}>Terms & Conditions</Text>
-        </Text>
-      </View>
-
-   
-        <TouchableOpacity>
-          <Text style={styles.buttontext}>CREATE ACCOUNT</Text>
-        </TouchableOpacity>
-
-      <View style={styles.signinRow}>
-        <Text style={styles.smallText}>Already have an account? </Text>
-        <TouchableOpacity>
-          <Text style={styles.link}>Sign in</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={handleSubmit} style={styles.submitBtn}>
+        <Text style={styles.buttontext}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -80,18 +89,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 30,
     marginBottom: 30,
-    elevation: 20,
+    elevation: 10,
     shadowColor: '#7F00FF',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 5,
   },
-  eyeIcon: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+
   inputBox: {
     flex: 1,
     paddingVertical: 10,
@@ -99,24 +104,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginLeft: 5,
   },
-  terms: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  checkBox: {
-    transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-  },
-  smallText: {
-    fontSize: 11,
-    color: '#444',
-  },
-  link: {
-    color: '#7F00FF',
-    fontSize: 12,
-  },
-  button: {
+
+  submitBtn: {
+    backgroundColor: '#DF71FDFF',
     borderRadius: 50,
     padding: 5,
     margin: 10,
@@ -127,12 +117,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     paddingVertical: 5,
-  },
-  signinRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 25,
   },
 });
 
