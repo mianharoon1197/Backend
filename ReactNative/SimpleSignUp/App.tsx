@@ -28,7 +28,7 @@ function AppContent() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName='Home'>
           <Stack.Screen name="Form" component={SignUp} />
           <Stack.Screen name="Home" component={Home} />
         </Stack.Navigator>

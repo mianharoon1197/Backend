@@ -1,7 +1,7 @@
 import express from "express";
 
 const app = express();
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const dbName = "harry";
 const collectionName = "practice";
@@ -42,8 +42,26 @@ Client.connect().then((connection) => {
       const data = await collection.find().toArray();
       resp.status(200).send(data);
     } catch (error) {
-      console.log(error);
+      console.log("Failed to get data from db", error);
       resp.status(500).send({ error: "Failed to fetch Data!" });
+    }
+  });
+
+  //delete data from db
+  app.delete("/deleteData/:id", async (req, resp) => {
+    try {
+      const id = req.params.id;
+      const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+      if (result.deletedCount === 1) {
+        console.log("Data Deleted");
+        resp.status(200).send({ message: "User Deleted Successfully" });
+      } else {
+        resp.status(404).send({ message: "No User Found" });
+      }
+    } catch (error) {
+      console.log("Error Deleting Data from DB: ", error);
+      resp.status(500).send({ error: "Failed to Delete User" });
     }
   });
 });
