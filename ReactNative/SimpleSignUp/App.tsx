@@ -3,7 +3,14 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import SignUp from './components/SignUp';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from './types/navigation';
+
+import SignUp from './components/UserForm';
+import Home from './components/Home';
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -20,7 +27,12 @@ function AppContent() {
 
   return (
     <View style={styles.container}>
-      <SignUp />
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Form" component={SignUp} />
+          <Stack.Screen name="Home" component={Home} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </View>
   );
 }

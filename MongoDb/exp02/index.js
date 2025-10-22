@@ -40,7 +40,7 @@ Client.connect().then((connection) => {
   app.get("/getData", async (req, resp) => {
     try {
       const data = await collection.find().toArray();
-      resp.send(data);
+      resp.status(200).send(data);
     } catch (error) {
       console.log(error);
       resp.status(500).send({ error: "Failed to fetch Data!" });

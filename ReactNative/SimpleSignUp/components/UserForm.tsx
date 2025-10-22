@@ -5,28 +5,53 @@ import {
   View,
   Text,
   TextInput,
+  FlatList,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useState } from 'react';
-import { sendData } from '../api/userapi';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../types/navigation';
+import { useState, useEffect } from 'react';
+import { sendData, getUsers } from '../api/userapi';
+
+interface UserData {
+  _id: string;
+  name: string;
+  email: string;
+  age: string;
+}
 
 function SignUp() {
   const isDarkMode = useColorScheme() === 'dark';
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [age, setAge] = useState('');
+  const [data, setData] = useState<UserData[]>([]);
 
   const handleSubmit = async () => {
     if (!name.trim()) return Alert.alert('Validation', 'Name is required!');
     await sendData({ name, email, age });
     Alert.alert('Success', 'Data sent to backend!');
+    navigation.navigate('Home');
     setName('');
     setEmail('');
     setAge('');
+    getData();
   };
+
+  const getData = async () => {
+    const res = await getUsers();
+    console.log(res);
+    setData(res);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -68,6 +93,20 @@ function SignUp() {
       <TouchableOpacity onPress={handleSubmit} style={styles.submitBtn}>
         <Text style={styles.buttontext}>Submit</Text>
       </TouchableOpacity>
+
+      {/* <View style={styles.userData}>
+        <Text>Data From MongoDb</Text>
+
+        <FlatList
+          data={data}
+          keyExtractor={item => item._id}
+          renderItem={({ item }) => (
+            <Text>
+              {item.name} -- {item.email} -- {item.age}
+            </Text>
+          )}
+        />
+      </View> */}
     </View>
   );
 }
@@ -81,6 +120,7 @@ const styles = StyleSheet.create({
   },
   signupText: {
     textAlign: 'center',
+   // marginTop: 100,
     marginBottom: 50,
     fontSize: 30,
     fontWeight: 'bold',
@@ -117,6 +157,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     paddingVertical: 5,
+  },
+  userData: {
+    flex: 1,
+    marginTop: 10,
+    alignSelf: 'center',
   },
 });
 
