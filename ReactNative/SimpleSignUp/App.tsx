@@ -7,8 +7,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types/navigation';
 
-import SignUp from './components/UserForm';
+import Form from './components/UserForm';
 import Home from './components/Home';
+import Table from './components/Table';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App() {
@@ -28,9 +29,10 @@ function AppContent() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Home'>
-          <Stack.Screen name="Form" component={SignUp} />
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Form" component={Form} />
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Table" component={Table} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

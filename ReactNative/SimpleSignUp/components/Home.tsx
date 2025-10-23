@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { getUsers, deleteUser } from '../api/userapi';
+import { getUsers, deleteUser, updateUser } from '../api/userapi';
 
 interface UserData {
   _id: string;
@@ -32,9 +32,22 @@ const Home = () => {
     }
   };
 
-  const handleUpdate = (id: string) => {
-    Alert.alert('Update', `You clicked update for user ID: ${id}`);
-    // 🧠 TODO: Navigate to Update screen or open modal here
+  const handleUpdate = async (id: string) => {
+    try {
+      const response = await updateUser(id, {
+        name: 'Hanan',
+        email: 'billi@gmail.com',
+        age: '3',
+      });
+      if (response?.message) {
+        Alert.alert('Success', response.message);
+        fetchData();
+      } else {
+        Alert.alert('Error', 'Failed to Update User');
+      }
+    } catch (error) {
+      console.log('Error Updating User: ', error);
+    }
   };
 
   const handleDelete = async (id: string) => {

@@ -43,3 +43,19 @@ export const deleteUser = async (id: string) => {
     console.log('Error Deleting User From Db: ', error);
   }
 };
+
+//update data to db
+export const updateUser = async (id: string, updatedData: any) => {
+  try {
+    const response = await fetch(`${SERVER}/updateData/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData),
+    });
+    const res = await response.json();
+    console.log('Server Response: ', res);
+    return res;
+  } catch (error) {
+    console.log('Error Updating User From Db: ', error);
+  }
+};
