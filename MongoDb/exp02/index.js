@@ -19,7 +19,7 @@ Client.connect().then((connection) => {
   const db = connection.db(dbName);
   const collection = db.collection(collectionName);
 
-  app.get("/",(req, resp) => {
+  app.get("/", (req, resp) => {
     resp.send("API is working");
   });
 
@@ -40,7 +40,7 @@ Client.connect().then((connection) => {
       resp.status(500).send({ error: "Database insertion failed!" });
     }
   });
-// get all users from db
+  // get all users from db
   app.get("/getData", async (req, resp) => {
     try {
       const data = await collection.find().toArray();
@@ -53,12 +53,12 @@ Client.connect().then((connection) => {
 
   //get only 1 user from db on basis of id
   app.get("/getData/:id", async (req, resp) => {
-    const id = req.params.id
+    const id = req.params.id;
     try {
-      const data = await collection.findOne({_id: new ObjectId(id)});
+      const data = await collection.findOne({ _id: new ObjectId(id) });
       resp.status(200).send({
-        message:'Data Fecthed',
-        data:data
+        message: "Data Fecthed",
+        data: data,
       });
     } catch (error) {
       console.log("Failed to get a user from db", error);
@@ -73,7 +73,7 @@ Client.connect().then((connection) => {
       const result = await collection.deleteOne({ _id: new ObjectId(id) });
 
       if (result.deletedCount === 1) {
-        console.log("Data Deleted From Db: ",result);
+        console.log("Data Deleted From Db: ", result);
         resp.status(200).send({ message: "User Deleted Successfully" });
       } else {
         resp.status(404).send({ message: "No User Found" });
@@ -81,6 +81,29 @@ Client.connect().then((connection) => {
     } catch (error) {
       console.log("Error Deleting Data from DB: ", error);
       resp.status(500).send({ error: "Failed to Delete User" });
+    }
+  });
+
+  // update a user in db on basis if id
+  app.put("/updateData/:id", async (req, resp) => {
+    try {
+      const id = req.params.id;
+
+      //const update = req.body;
+      const result = await collection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: req.body } //data to update on basis of abv id
+      );
+      if (result.matchedCount === 0) {
+        return resp.status(404).send({ message: "User Not Found" });
+      } else {
+        return resp
+          .status(200)
+          .send({ message: "User Updated Succesfully", result: req.body });
+      }
+    } catch (error) {
+      console.log("Error Updating Data to DB: ", error);
+      resp.status(500).send({ message: "Failed to Updated User" });
     }
   });
 });
