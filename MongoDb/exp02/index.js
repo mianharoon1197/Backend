@@ -51,6 +51,21 @@ Client.connect().then((connection) => {
     }
   });
 
+  //get only 1 user from db on basis of id
+  app.get("/getData/:id", async (req, resp) => {
+    const id = req.params.id
+    try {
+      const data = await collection.findOne({_id: new ObjectId(id)});
+      resp.status(200).send({
+        message:'Data Fecthed',
+        data:data
+      });
+    } catch (error) {
+      console.log("Failed to get a user from db", error);
+      resp.status(500).send({ error: "Failed to fetch User!" });
+    }
+  });
+
   //delete data from db
   app.delete("/deleteData/:id", async (req, resp) => {
     try {
