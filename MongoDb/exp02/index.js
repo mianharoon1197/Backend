@@ -19,6 +19,10 @@ Client.connect().then((connection) => {
   const db = connection.db(dbName);
   const collection = db.collection(collectionName);
 
+  app.get("/",(req, resp) => {
+    resp.send("API is working");
+  });
+
   //inserting data to db
   app.post("/submitData", async (req, resp) => {
     try {
@@ -36,7 +40,7 @@ Client.connect().then((connection) => {
       resp.status(500).send({ error: "Database insertion failed!" });
     }
   });
-
+// get all users from db
   app.get("/getData", async (req, resp) => {
     try {
       const data = await collection.find().toArray();
@@ -54,7 +58,7 @@ Client.connect().then((connection) => {
       const result = await collection.deleteOne({ _id: new ObjectId(id) });
 
       if (result.deletedCount === 1) {
-        console.log("Data Deleted");
+        console.log("Data Deleted From Db: ",result);
         resp.status(200).send({ message: "User Deleted Successfully" });
       } else {
         resp.status(404).send({ message: "No User Found" });
